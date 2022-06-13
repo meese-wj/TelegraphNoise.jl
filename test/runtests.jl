@@ -1,10 +1,11 @@
 using TelegraphNoise
 using Test
 using Random
+using StableRNGs # for testing
 
 # For tesing purposes. 
 # The order of the tests cannot be changed without changing the output.
-Random.seed!(42) 
+stable_rng = StableRNG(42)
 
 @testset "TelegraphNoise.jl" begin
     # Test the expected autocorrelation time
@@ -17,11 +18,11 @@ Random.seed!(42)
     @test let 
         tele = Telegraph(2.0, 10)
         ( tele.dwell_time == 2.0 &&
-          tele.signal == [1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0] )
+          tele.signal == [1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0] )
     end
 
     # Test the poisson_rand functionality for integers
     @test let 
-        poisson_rand(50.) == 30 && poisson_rand(Int32, 5000) == 1778
+        poisson_rand(stable_rng, 50.) == 43 && poisson_rand(stable_rng, Int32, 5000) == 1061
     end
 end
