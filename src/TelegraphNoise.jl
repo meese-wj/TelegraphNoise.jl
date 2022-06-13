@@ -41,28 +41,29 @@ expd_τ(tele::Telegraph ) = convert(typeof(tele.dwell_time), 0.5) * tele.dwell_t
 
 
 """
-    Telegraph(dwell_time, signal_length::Int)
+    Telegraph([rng = GLOBAL_RNG], dwell_time, signal_length::Int)
 
 Constructor that specifies the length of the signal rather than the signal itself.
 """
+Telegraph(rng::AbstractRNG, dwell_time, signal_length::Int) = generate_telegraph(rng, dwell_time, signal_length)
 Telegraph(dwell_time, signal_length::Int) = generate_telegraph(dwell_time, signal_length)
 
 """
-    generate_telegraph( dwell_time, signal_length ) → Telegraph
+    generate_telegraph([rng = GLOBAL_RNG], dwell_time, signal_length ) → Telegraph
 
 Function that initializes a random [`Telegraph`](@ref) signal with a 
 specified `dwell_time` and of a given length `signal_length`.
 """
-function generate_telegraph( dwell_time, signal_length )
+function generate_telegraph(rng::AbstractRNG, dwell_time, signal_length )
 
     signal::Vector{Float64} = []
-    stepsize = poisson_rand(dwell_time)
+    stepsize = poisson_rand(rng, dwell_time)
     while stepsize < 1
-        stepsize = poisson_rand(dwell_time)
+        stepsize = poisson_rand(rng, dwell_time)
     end
     append!(signal, ones(stepsize))
     while length(signal) < Int(signal_length)
-        stepsize = poisson_rand(dwell_time)
+        stepsize = poisson_rand(rng, dwell_time)
         if signal[end] == 1
             append!(signal, zeros(stepsize))
         else
@@ -71,6 +72,7 @@ function generate_telegraph( dwell_time, signal_length )
     end
     return Telegraph( dwell_time, signal[1:signal_length] )
 end
+generate_telegraph(dwell_time, signal_length::Int) = generate_telegraph(Random.default_rng(), dwell_time, signal_length)
 
 @doc raw"""
     poisson_rand([rng = GLOBAL_RNG], ::Type{T}, dwell_time, []) → T
