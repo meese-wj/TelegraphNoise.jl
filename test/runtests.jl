@@ -2,7 +2,9 @@ using TelegraphNoise
 using Test
 using Random
 
-Random.seed!(42) # For tesing purposes.
+# For tesing purposes. 
+# The order of the tests cannot be changed without changing the output.
+Random.seed!(42) 
 
 @testset "TelegraphNoise.jl" begin
     # Test the expected autocorrelation time
