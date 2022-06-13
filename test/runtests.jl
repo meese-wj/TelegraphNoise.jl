@@ -17,4 +17,9 @@ Random.seed!(42) # For tesing purposes.
         ( tele.dwell_time == 2.0 &&
           tele.signal == [1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0] )
     end
+
+    # Test the poisson_rand functionality for integers
+    @test let 
+        poisson_rand(50.) == 30 && poisson_rand(Int32, 5000) == 1778
+    end
 end
