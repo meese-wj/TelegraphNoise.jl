@@ -1,0 +1,13 @@
+name = "TelegraphNoise"
+uuid = "843dd301-5ab4-451e-a248-fc72ff48def4"
+authors = ["W. Joe Meese <meese022@umn.edu> and contributors"]
+version = "0.1.0"
+
+[compat]
+julia = "1.1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

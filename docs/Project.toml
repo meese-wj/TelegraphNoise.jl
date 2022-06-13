@@ -1,0 +1,3 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+TelegraphNoise = "843dd301-5ab4-451e-a248-fc72ff48def4"
