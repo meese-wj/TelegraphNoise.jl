@@ -16,7 +16,7 @@ stable_rng = StableRNG(42)
 
     # Test the (dwell_time, signal_length) constructor
     @test let 
-        tele = Telegraph(2.0, 10)
+        @show tele = Telegraph(2.0, 10)
         ( tele.dwell_time == 2.0 &&
           tele.signal == [1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0] )
     end
