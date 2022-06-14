@@ -6,7 +6,7 @@ on:
     tags: '*'
   pull_request:
   schedule:
-    - cron: '0 6 * * *' # Daily at 6am UTC (1am CST)
+    - cron: '0 */6 * * *' # 4 times a day daily
 
 concurrency:
   # Skip intermediate builds: always.
