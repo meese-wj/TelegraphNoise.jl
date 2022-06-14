@@ -10,5 +10,5 @@ RTN, also known as [_burst noise_](https://en.wikipedia.org/wiki/Burst_noise?old
 $$ {\rm Pr}\left( t \in (t_0, t_0 + {\rm d} t) \right) = {\rm e}^{-t/T_D} \cdot \frac{{\rm d}t}{T_D}.$$
 
 One can then [show](https://dsp.stackexchange.com/questions/16596/autocorrelation-of-a-telegraph-process-constant-signal) that the autocovariance $\mathcal{A}$ (autocorrelation for de-meaned signals) goes as 
-$$ \mathcal{A}(t, t_0; T_D) = \exp\left( -2\,\frac{\vert t - t_0 \vert}{T_D} \right),$$
+$$ \mathcal{A}(t, t_0; T_D) = \exp\left( -2 \\; \frac{\vert t - t_0 \vert}{T_D} \right),$$
 showing the stationarity of these processes. Furthermore, the _autocorrelation time_ $\tau$ of such a signal then follows exactly as $\tau = T_D /2$.
