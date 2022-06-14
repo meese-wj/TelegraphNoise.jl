@@ -16,13 +16,13 @@ stable_rng = StableRNG(42)
 
     # Test the (dwell_time, signal_length) constructor
     @test let 
-        @show tele = Telegraph(stable_rng, 2.0, 10)
+        tele = Telegraph(stable_rng, 2.0, 10)
         ( tele.dwell_time == 2.0 &&
-          tele.signal == [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0] )
+          tele.signal == [-1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0] )
     end
 
     # Test the poisson_rand functionality for integers
     @test let 
-        poisson_rand(stable_rng, 50.) == 9 && poisson_rand(stable_rng, Int32, 5000) == 6100
+        poisson_rand(stable_rng, 50.) == 10 && poisson_rand(stable_rng, Int32, 5000) == 17725
     end
 end
