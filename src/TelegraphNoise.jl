@@ -19,8 +19,9 @@ methods.
 module TelegraphNoise
 
 using Random
+import Base
 
-export Telegraph, expd_τ, generate_telegraph, generate_telegraph!, poisson_rand
+export Telegraph, length, eltype, expd_τ, generate_telegraph, generate_telegraph!, poisson_rand
 
 """
     Telegraph(dwell_time, signal)
@@ -31,6 +32,26 @@ struct Telegraph{T <: AbstractFloat}
     dwell_time::T
     signal::Vector{T}
 end
+
+"""
+    length(tele::Telegraph) → Int
+
+Dispatch `Base.length` for the [`Telegraph`](@ref) object. 
+
+# Additional information
+* Wrapper around `length(tele.signal)`.
+"""
+Base.length(tele::Telegraph) = Base.length(tele.signal)
+
+"""
+    eltype(tele::Telegraph) → Type
+
+Dispatch `Base.eltype` for the [`Telegraph`](@ref) object.
+
+# Additional information
+* Wrapper around `Base.eltype(tele.signal)`.
+"""
+Base.eltype(tele::Telegraph) = eltype(tele.signal)
 
 """
     expd_τ(tele::Telegraph{T}) → T
@@ -57,12 +78,13 @@ specified `dwell_time` and of a given length `signal_length`.
 function generate_telegraph(rng::AbstractRNG, dwell_time, signal_length )
     
     tele = Telegraph(dwell_time, zeros(typeof(dwell_time), signal_length))
+    tele_type = eltype(tele)
     last_idx = 1
-    tele.signal[last_idx] = ifelse( rand(rng) < 0.5, one(dwell_time), -one(dwell_time) )
+    tele.signal[last_idx] = ifelse( rand(rng) < 0.5, one(tele_type), -one(tele_type) )
     while last_idx < signal_length
         stepsize = poisson_rand(dwell_time)
         stepsize = ifelse( last_idx + 1 + stepsize > signal_length, signal_length - (last_idx + 1), stepsize )
-        next_value = ifelse( tele.signal[last_idx] == one(dwell_time), -one(dwell_time), one(dwell_time) )
+        next_value = ifelse( tele.signal[last_idx] == one(tele_type), -one(tele_type), one(dwell_time) )
         tele.signal[last_idx + 1 : last_idx + 1 + stepsize] .= next_value
         last_idx = last_idx + 1 + stepsize
     end
