@@ -8,7 +8,7 @@ This module provides an easy framework to generate such signals, as they happen 
 well known analytical properties. For example, the autocovariance of the signal (often 
 called the _autocorrelation_ physics literature) goes as 
 ```math
-\mathcal{A}(t, t_0; T_D) = \exp\left( -2\frac{\vert t - t_0 \vert}{T_D} \right). 
+\mathcal{A}(t, t_0; T_D) = \exp\left( -2\,\frac{\vert t - t_0 \vert}{T_D} \right). 
 ```
 Therefore, the characteristic _autocorrelation time_ ``\tau = T_D/2``. Importantly, the 
 expression above shows that these random signals are _stationary_ meaning that correlations
@@ -62,7 +62,7 @@ expd_τ(tele::Telegraph ) = convert(typeof(tele.dwell_time), 0.5) * tele.dwell_t
 
 
 """
-    Telegraph([rng = GLOBAL_RNG], dwell_time, signal_length::Int)
+    Telegraph([rng = default_rng()], dwell_time, signal_length::Int)
 
 Constructor that specifies the length of the signal rather than the signal itself.
 """
@@ -70,7 +70,7 @@ Telegraph(rng::AbstractRNG, dwell_time, signal_length::Int) = generate_telegraph
 Telegraph(dwell_time, signal_length::Int) = generate_telegraph(dwell_time, signal_length)
 
 """
-    generate_telegraph([rng = GLOBAL_RNG], dwell_time, signal_length ) → Telegraph
+    generate_telegraph([rng = default_rng()], dwell_time, signal_length ) → Telegraph
 
 Function that initializes a random [`Telegraph`](@ref) signal with a 
 specified `dwell_time` and of a given length `signal_length`.
@@ -109,7 +109,7 @@ end
 generate_telegraph(dwell_time, signal_length::Int) = generate_telegraph(Random.default_rng(), dwell_time, signal_length)
 
 @doc raw"""
-    poisson_rand([rng = GLOBAL_RNG], ::Type{T}, dwell_time, []) → T
+    poisson_rand([rng = default_rng()], ::Type{T}, dwell_time, []) → T
 
 Generate a random number of steps in which to stay in the next state.
 
@@ -133,7 +133,7 @@ _poisson_func(dwell_time, rng::AbstractRNG = Random.default_rng()) = -dwell_time
 _poisson_floor(::Type{T}, dwell_time, rng::AbstractRNG = Random.default_rng()) where {T} = floor(T, _poisson_func(dwell_time, rng))
 
 """
-    poisson_rand([rng = GLOBAL_RNG], dwell_time) → Int
+    poisson_rand([rng = default_rng()], dwell_time) → Int
 
 Default implementation of the [`poisson_rand`](@ref) is to return an `Int` for the size of the _dwell_.
 """
