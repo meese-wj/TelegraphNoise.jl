@@ -6,7 +6,7 @@ before switching.
 
 This module provides an easy framework to generate such signals, as they happen to have 
 well known analytical properties. For example, the autocovariance of the signal (often 
-called the _autocorrelation_ physics literature) goes as 
+called the _autocorrelation_ in physics literature) goes as 
 ```math
 \mathcal{A}(t, t_0; T_D) = \exp\left( -2\,\frac{\vert t - t_0 \vert}{T_D} \right). 
 ```
@@ -115,9 +115,9 @@ Generate a random number of steps in which to stay in the next state.
 
 # Additional information
 The probability that an RTN signal will _dwell_ in its current state for a time
-``t \in [t_0, t_0 + {\rm d} t)`` is given by 
+``t \in (t_0, t_0 + {\rm d} t)`` is given by 
 ```math
-{\rm Pr}\left( t \in [t_0, t_0 + {\rm d} t) \right) = {\rm e}^{-t/T_D} \cdot \frac{{\rm d}t}{T_D}.
+{\rm Pr}\left( t \in (t_0, t_0 + {\rm d} t) \right) = {\rm e}^{-t/T_D} \cdot \frac{{\rm d}t}{T_D}.
 ```
 
 One then samples from this probability distribution using the _inverse-CDF_ method and obtains
