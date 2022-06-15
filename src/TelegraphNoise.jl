@@ -89,22 +89,6 @@ function generate_telegraph(rng::AbstractRNG, dwell_time, signal_length )
         last_idx = last_idx + 1 + stepsize
     end
     return tele
-
-    # signal::Vector{Float64} = []
-    # stepsize = poisson_rand(rng, dwell_time)
-    # while stepsize < 1
-    #     stepsize = poisson_rand(rng, dwell_time)
-    # end
-    # append!(signal, ones(stepsize))
-    # while length(signal) < Int(signal_length)
-    #     stepsize = poisson_rand(rng, dwell_time)
-    #     if signal[end] == 1
-    #         append!(signal, zeros(stepsize))
-    #     else
-    #         append!(signal, ones(stepsize))
-    #     end
-    # end
-    # return Telegraph( dwell_time, signal[1:signal_length] )
 end
 generate_telegraph(dwell_time, signal_length::Int) = generate_telegraph(Random.default_rng(), dwell_time, signal_length)
 
