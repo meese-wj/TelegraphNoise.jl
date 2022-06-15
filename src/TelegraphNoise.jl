@@ -24,14 +24,38 @@ import Base
 export Telegraph, length, eltype, expd_τ, generate_telegraph, generate_telegraph!, poisson_rand
 
 """
-    Telegraph(dwell_time, signal)
+    Telegraph{T}([amplitude = one(T)], dwell_time, signal)
 
 Wrapper that contains the relevant information for a given `Telegraph` signal. 
 """
 struct Telegraph{T <: AbstractFloat}
+    amplitude::T
     dwell_time::T
     signal::Vector{T}
 end
+function Telegraph(amplitude::Real, dwell_time::Real, signal::Vector)
+    _check_telegraph_params(amplitude, dwell_time)
+    return Telegraph( convert(Float64, amplitude), convert(Float64, dwell_time), convert.(Float64, signal) )
+end
+
+function _check_telegraph_params(amplitude::Real, dwell_time::Real)
+    if amplitude <= zero(amplitude)
+        throw(ArgumentError("\nSignal amplitudes must be positive.\n"))
+    end
+    if dwell_time <= zero(dwell_time)
+        throw(ArgumentError("\nSignal dwell times must be positive.\n"))
+    end
+    return nothing
+end
+
+function _check_telegraph_params(amplitude::Real, dwell_time::Real, signal_length)
+    _check_telegraph_params(amplitude, dwell_time)
+    if signal_length <= zero(Int)
+        throw(ArgumentError("\nSignal length must be convertible to a positive integer.\n"))
+    end
+    return nothing
+end
+
 
 """
     length(tele::Telegraph) → Int
@@ -58,39 +82,43 @@ Base.eltype(tele::Telegraph) = eltype(tele.signal)
 
 Return the expected autocorrelation time from a random telegraph signal.
 """
-expd_τ(tele::Telegraph ) = convert(typeof(tele.dwell_time), 0.5) * tele.dwell_time
+expd_τ(tele::Telegraph) = convert(typeof(tele.dwell_time), 0.5) * tele.dwell_time
 
+Telegraph(dwell_time::T, signal::Vector{T}) where {T <: AbstractFloat} = Telegraph(one(T), dwell_time, signal)
 
 """
-    Telegraph([rng = default_rng()], dwell_time, signal_length::Int)
+    Telegraph{T}([rng = default_rng()], [amplitude = one(T)], dwell_time, signal_length::Int)
 
 Constructor that specifies the length of the signal rather than the signal itself.
 """
-Telegraph(rng::AbstractRNG, dwell_time, signal_length::Int) = generate_telegraph(rng, dwell_time, signal_length)
-Telegraph(dwell_time, signal_length::Int) = generate_telegraph(dwell_time, signal_length)
+Telegraph(rng::AbstractRNG, amplitude::Real, dwell_time::Real, signal_length::Real) = generate_telegraph(rng, dwell_time, signal_length; amplitude = amplitude)
+Telegraph(rng::AbstractRNG, dwell_time::Real, signal_length::Real) = generate_telegraph(rng, convert(Float64, dwell_time), signal_length)
+Telegraph(amplitude, dwell_time, signal_length::Real) = generate_telegraph(convert(Float64, dwell_time), signal_length; amplitude = convert(Float64, amplitude))
+Telegraph(dwell_time::Real, signal_length::Real) = generate_telegraph(convert(Float64, dwell_time), signal_length)
 
 """
-    generate_telegraph([rng = default_rng()], dwell_time, signal_length ) → Telegraph
+    generate_telegraph([rng = default_rng()], dwell_time, signal_length; amplitude = one(T) ) → Telegraph
 
 Function that initializes a random [`Telegraph`](@ref) signal with a 
 specified `dwell_time` and of a given length `signal_length`.
 """
-function generate_telegraph(rng::AbstractRNG, dwell_time, signal_length )
-    
-    tele = Telegraph(dwell_time, zeros(typeof(dwell_time), signal_length))
-    tele_type = eltype(tele)
+function generate_telegraph(rng::AbstractRNG, dwell_time::Real, signal_length; amplitude = one(Float64) )
+    signal_length = convert(Int, signal_length)
+    _check_telegraph_params(amplitude, dwell_time)
+
+    tele = Telegraph(amplitude, dwell_time, zeros(Float64, signal_length))
     last_idx = 1
-    tele.signal[last_idx] = ifelse( rand(rng) < 0.5, one(tele_type), -one(tele_type) )
+    tele.signal[last_idx] = ifelse( rand(rng) < 0.5, tele.amplitude, -tele.amplitude )
     while last_idx < signal_length
         stepsize = poisson_rand(dwell_time)
         stepsize = ifelse( last_idx + 1 + stepsize > signal_length, signal_length - (last_idx + 1), stepsize )
-        next_value = ifelse( tele.signal[last_idx] == one(tele_type), -one(tele_type), one(dwell_time) )
+        next_value = ifelse( tele.signal[last_idx] == tele.amplitude, -tele.amplitude, tele.amplitude )
         tele.signal[last_idx + 1 : last_idx + 1 + stepsize] .= next_value
         last_idx = last_idx + 1 + stepsize
     end
     return tele
 end
-generate_telegraph(dwell_time, signal_length::Int) = generate_telegraph(Random.default_rng(), dwell_time, signal_length)
+generate_telegraph(dwell_time::T, signal_length; amplitude = one(T)) where {T <: Real} = generate_telegraph(Random.default_rng(), dwell_time, signal_length; amplitude = amplitude)
 
 @doc raw"""
     poisson_rand([rng = default_rng()], ::Type{T}, dwell_time, []) → T
