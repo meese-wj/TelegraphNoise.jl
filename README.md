@@ -11,4 +11,8 @@ $$ {\rm Pr}\left( t \in (t_0, t_0 + {\rm d} t) \right) = {\rm e}^{-t/T_D} \cdot 
 
 One can then [show](https://dsp.stackexchange.com/questions/16596/autocorrelation-of-a-telegraph-process-constant-signal) that the autocovariance $\mathcal{A}$ (autocorrelation for de-meaned signals) goes as 
 $$ \mathcal{A}(t, t_0; T_D) = \exp\left( -2 \\; \frac{\vert t - t_0 \vert}{T_D} \right),$$
-showing the stationarity of these processes. Furthermore, the _autocorrelation time_ $\tau$ of such a signal then follows exactly as $\tau = T_D /2$.
+showing the stationarity of these processes [[1]](#1). Furthermore, the _autocorrelation time_ $\tau$ of such a signal then follows exactly as $\tau = T_D /2$.
+
+## Additional Information
+<a id="1">[1]</a>
+For an additional derivation, and a great overall introduction to the science of noise analysis in signals, check out D. K. C. MacDonald's [_Noise and Fluctuations_](https://isbnsearch.org/isbn/9780486450292)  (orig. 1962, _Dover Publications_ 2006). The derivation is specifically in Appendix IV.
